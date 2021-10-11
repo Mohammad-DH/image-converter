@@ -4,13 +4,14 @@ var fs = require('fs')
 var Path = require("path");
 
 exports.ROTATE = (req, res) => {
-
+    //geting the input
     var form = new formidable.IncomingForm();
 
     form.parse(req, async (err, fields, files) => {
 
         var degree = parseInt(fields.degree)
 
+        //filtering the input
         if (degree && Number.isInteger(degree) && degree !== 0) {
             const Type = files.file.type
 
@@ -29,7 +30,7 @@ exports.ROTATE = (req, res) => {
     })
 
 }
-
+//rotate function
 async function rotate(file, type, degree, res) {
 
     const name = `Rotated+${Date.now()}+${file.name}`
@@ -41,9 +42,7 @@ async function rotate(file, type, degree, res) {
         .toFormat(`${Format}`)
         .toFile(path);
 
-
-    console.log(path)
-
+    //cleaning the file after time out
     setTimeout(() => {
 
         fs.unlink(Path.join(process.cwd(), path), (err) => {

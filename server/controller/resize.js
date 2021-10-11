@@ -5,6 +5,8 @@ var Path = require("path");
 
 exports.RESIZE = (req, res) => {
 
+
+    //geting the input
     var form = new formidable.IncomingForm();
 
     form.parse(req, async (err, fields, files) => {
@@ -12,6 +14,8 @@ exports.RESIZE = (req, res) => {
         var Width = parseInt(fields.width)
         var Height = parseInt(fields.height)
 
+
+        //filtering the input
         if ((fields.width && Number.isInteger(Width) && Width > 0) && (fields.height && Number.isInteger(Height) && Height > 0)) {
             const Type = files.file.type
 
@@ -21,17 +25,19 @@ exports.RESIZE = (req, res) => {
                 resize(files.file, Type, Width, Height, res)
 
             } else {
-                {/* handeling errors (format) */ }
+                // handeling errors (format)
                 return res.status(415).send("Wrong format");
             }
         } else {
-            {/* handeling errors (input) */ }
+            // handeling errors (input)
             return res.status(400).send("Wrong inputs , only use numbers");
         }
     })
 
 }
 
+
+//resize function
 async function resize(file, type, width, height, res) {
 
     const name = `Resized+${Date.now()}+${file.name}`
@@ -43,7 +49,7 @@ async function resize(file, type, width, height, res) {
         .toFormat(`${Format}`)
         .toFile(path);
 
-
+    //cleaning the file after time out
     setTimeout(() => {
 
         fs.unlink(Path.join(process.cwd(), path), (err) => {
